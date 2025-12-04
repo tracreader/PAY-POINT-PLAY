@@ -17,7 +17,7 @@ export default async function Home({ searchParams }: { searchParams: { m?: strin
     );
   }
 
-  // Debug: Show if keys are loaded
+  // Debug lines
   const debug = supabaseUrl ? 'Keys loaded OK' : 'KEYS MISSING - Check env vars';
   const { data: machine, error } = await supabase
     .from('machines')
@@ -29,8 +29,9 @@ export default async function Home({ searchParams }: { searchParams: { m?: strin
     return (
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-black to-gray-900 text-white">
         <h1 className="text-7xl font-black mb-8">PAY • POINT • PLAY</h1>
-        <p className="text-4xl mt-8 text-red-500">Invalid machine (Error: {error?.message || 'Not found'})</p>
-        <p className="text-sm opacity-70 mt-4">Debug: {debug}</p>
+        <p className="text-4xl mt-8 text-red-500">Invalid machine</p>
+        <p className="text-xl opacity-70 mt-4">Error: {error?.message || 'Not found'}</p>
+        <p className="text-sm opacity-70 mt-2">Debug: {debug}</p>
       </main>
     );
   }
