@@ -26,11 +26,12 @@ export default function Home() {
     supabase
       .from('machines')
       .select('machine_code, vendor_name')
-      .eq('machine_code', m)
+      .eq('machine_code', m.trim())  // Extra trim for safety
       .single()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
         setLoading(false);
-        if (data) setMachine(data);
+        console.log('Query result:', data, error); // Check console for debug
+        if (data && !error) setMachine(data);
       });
   }, []);
 
