@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PAY • POINT • PLAY</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-gradient-to-b from-black to-gray-900 text-white min-h-screen">
+  <main class="flex min-h-screen flex-col items-center justify-center p-8 text-center">
+    <h1 class="text-7xl font-black mb-8">PAY • POINT • PLAY</h1>
+    <div id="content" class="space-y-4">
+      <p id="loading" class="text-3xl">Loading machine...</p>
+    </div>
+  </main>
+
+  <script>
+    const supabaseUrl = 'https://flgtxowtclkmizdpybnc.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsZ3R4b3d0Y2xrbWl6ZHB5Ym5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ3NzA4NjgsImV4cCI6MjA4MDM0Njg2OH0.s5cRtYF2k3Gva4yuiMwxr_RWwoNYvBLQFhg0ceTbjU8';
+    const supabase = Supabase.createClient(supabaseUrl, supabaseKey);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const m = urlParams.get('m')?.trim() || '';
+
+    const content = document.getElementById('content');
+    const loading = document.getElementById('loading');
+
+    if (!m) {
+      loading.textContent = 'Scan a machine QR code';
+      loading.classList.add('text-red-500');
+      return;
+    }
+
+    supabase
+      .from('machines')
+      .select('machine_code, vendor_name')
+      .eq('machine_code', m)
+      .single()
+      .then(({ data, error }) => {
+        loading.style.display = 'none';
+        if (data && !error) {
+          content.innerHTML = `
+            <p class="text-3xl mb-2">${data.vendor_name}</p>
+            <p class="text-5xl font-bold text-green-400 mb-12">#${data.machine_code}</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl">
+              <button class="bg-green-600 hover:bg-green-500 text-4xl font-bold py-12 px-16 rounded-3xl">$1 → 1 play</button>
+              <button class="bg-green-600 hover:bg-green-500 text-4xl font-bold py-12 px-16 rounded-3xl">$3 → 4 plays</button>
+              <button class="bg-green-600 hover:bg-green-500 text-4xl font-bold py-12 px-16 rounded-3xl">$5 → 8 plays</button>
+              <button class="bg-green-600 hover:bg-green-500 text-4xl font-bold py-12 px-16 rounded-3xl">$10 → 18 plays</button>
+            </div>
+          `;
+        } else {
+          content.innerHTML = `
+            <p class="text-4xl text-red-500">Invalid machine</p>
+            <p class="text-xl opacity-70 mt-4">Contact support</p>
+          `;
+        }
+      });
+  </script>
+</body>
+</html>
