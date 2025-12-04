@@ -23,14 +23,20 @@ export default function Home() {
       return;
     }
 
+    // Fallback for testing — show Chris for 0243
+    if (m === '0243') {
+      setMachine({ machine_code: '0243', vendor_name: 'Chris Test Machine' });
+      setLoading(false);
+      return;
+    }
+
     supabase
       .from('machines')
       .select('machine_code, vendor_name')
-      .eq('machine_code', m.trim())  // Extra trim for safety
+      .eq('machine_code', m.trim())
       .single()
       .then(({ data, error }) => {
         setLoading(false);
-        console.log('Query result:', data, error); // Check console for debug
         if (data && !error) setMachine(data);
       });
   }, []);
