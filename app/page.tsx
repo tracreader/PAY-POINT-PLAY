@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from ' 'react';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -23,12 +23,13 @@ export default function Home() {
       return;
     }
 
+    // EXACT match to your table: "0243" as text
     supabase
       .from('machines')
       .select('machine_code, vendor_name')
-      .eq('machine_code', m)          // ← exact match, no .toUpperCase()
+      .eq('machine_code', m)           // ← this is correct
       .single()
-      .then(({ data, error }) => {
+      .then(({ data }) => {
         setLoading(false);
         if (data) {
           setMachine(data);
@@ -36,7 +37,7 @@ export default function Home() {
       });
   }, []);
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center bg-black text-white text-4xl">Loading...</div>;
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-black text-white text-5xl">Loading...</div>;
   if (!machineId) return <div className="flex min-h-screen flex-col items-center justify-center bg-black text-white"><h1 className="text-8xl font-black">PAY • POINT • PLAY</h1><p className="text-4xl mt-8 text-red-500">Scan a machine QR code</p></div>;
   if (!machine) return <div className="flex min-h-screen flex-col items-center justify-center bg-black text-white"><h1 className="text-8xl font-black">PAY • POINT • PLAY</h1><p className="text-5xl mt-8 text-red-500">Invalid machine</p><p className="text-xl mt-4 opacity-70">Contact support</p></div>;
 
